@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-verify:
+  build:
     runs-on: ubuntu-latest
     steps:
     - name: Check out repository
@@ -15,14 +15,12 @@ jobs:
       with:
         submodules: 'recursive'
 
-    - name: Set up ESP-IDF
-      uses: espressif/idf-actions/setup-idf@v1
+    - name: Build the project
+      uses: espressif/esp-idf-ci-action@v1
       with:
         esp_idf_version: 'v4.4'
-
-    - name: Build the project
-      working-directory: ./mcugdx/examples/doom
-      run: idf.py build
+        target: 'esp32s3'
+        path: 'mcugdx/examples/doom'
 
     - name: Verify the build output
       run: |
