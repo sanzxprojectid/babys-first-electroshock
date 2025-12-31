@@ -1,0 +1,34 @@
+name: Build Doom Project
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+
+    - name: Set up ESP-IDF
+      uses: espressif/idf-actions/setup-idf@v1
+      with:
+        esp_idf_version: 'v4.4'
+
+    - name: Build the project
+      working-directory: ./mcugdx/examples/doom
+      run: idf.py build
+
+    - name: Verify the build output
+      run: |
+        if [ -f "mcugdx/examples/doom/build/doom.bin" ]; then
+          echo "doom.bin found."
+        else
+          echo "doom.bin not found!"
+          exit 1
+        fi
